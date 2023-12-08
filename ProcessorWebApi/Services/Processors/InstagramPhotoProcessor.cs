@@ -1,5 +1,5 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using ProcessorWebApi.Interfaces.Processors;
 using ProcessorWebApi.Models;
@@ -17,10 +17,7 @@ namespace ProcessorWebApi.Services.Processors
 
         public override async Task SendMediaAsync(GetMediaRequest request)
         {
-            EdgeDriver driver = new()
-            {
-                Url = request.MediaUri
-            };
+            ChromeDriver driver = CreateDefaultDriver(request.MediaUri);
 
             WebDriverWait wait = new(driver, TimeSpan.FromSeconds(30));
             wait.Until(q => q.FindElements(By.XPath(ImageXPath)).Count == 1);
