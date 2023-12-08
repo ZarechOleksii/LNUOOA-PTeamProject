@@ -1,5 +1,4 @@
-﻿using OpenQA.Selenium.Edge;
-using OpenQA.Selenium.Support.UI;
+﻿using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium;
 using ProcessorWebApi.Interfaces.Processors;
 using ProcessorWebApi.Models;
@@ -7,6 +6,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using SharedLib.Models;
 using Telegram.Bot.Types.Enums;
+using OpenQA.Selenium.Chrome;
 
 namespace ProcessorWebApi.Services.Processors
 {
@@ -17,10 +17,7 @@ namespace ProcessorWebApi.Services.Processors
 
         public override async Task SendMediaAsync(GetMediaRequest request)
         {
-            EdgeDriver driver = new()
-            {
-                Url = request.MediaUri
-            };
+            ChromeDriver driver = CreateDefaultDriver(request.MediaUri);
 
             WebDriverWait wait = new(driver, TimeSpan.FromSeconds(30));
             wait.Until(q => q.FindElements(By.XPath(VideoXPath)).Count == 1);
