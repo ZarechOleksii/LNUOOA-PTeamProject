@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: savevid-processor-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: savevid-processor-pod
+  template:
+    metadata:
+      labels:
+        app: savevid-processor-pod
+    spec:
+      containers:
+      - name: savevid-processor-container
+        image: processorimage:1.0.2
+        resources:
+          limits:
+            memory: "256M"
+            cpu: "1.0"
+        ports:
+        - containerPort: 8080
