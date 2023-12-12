@@ -16,6 +16,8 @@ namespace ProcessorWebApi.Services
 
             ChromeOptions options = new();
             options.AddArgument("--headless");
+            options.AddArgument("--no-sandbox");
+            options.AddArgument("--disable-dev-shm-usage");
 
             return new ChromeDriver(service, options)
             {

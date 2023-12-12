@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: savevid-processor-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: savevid-processor-pod
@@ -19,8 +19,8 @@ spec:
         image: savevid.azurecr.io/processorimage:latest
         resources:
           limits:
-            memory: "256M"
-            cpu: "0.25"
+            memory: "1024M"
+            cpu: "0.6"
         ports:
         - containerPort: 8080
         volumeMounts:
