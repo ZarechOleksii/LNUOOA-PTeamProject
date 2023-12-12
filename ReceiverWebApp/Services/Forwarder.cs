@@ -4,11 +4,11 @@ namespace ReceiverWebApp.Services
 {
     public class Forwarder : IForwarder
     {
-        const string ChatId = "ChatId";
-        const string Link = "Link";
-        const string UriString = "";
+        const string ChatId = "ChatIdentifier";
+        const string Link = "MediaUri";
+        const string UriString = "http://40.127.208.40:3333/api/send-media";
 
-        public async Task ForwardAsync(long chatId, string link)
+        public async Task<HttpResponseMessage> ForwardAsync(long chatId, string link)
         {
             HttpClient client = new();
 
@@ -25,7 +25,7 @@ namespace ReceiverWebApp.Services
                 Content = content
             };
 
-            await client.SendAsync(request);
+            return await client.SendAsync(request);
         }
     }
 }

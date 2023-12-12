@@ -66,7 +66,8 @@ namespace ReceiverWebApp.Services
 
             if (IsValidLink(messageText) && message is not null)
             {
-                await _forwarder.ForwardAsync(message.Chat.Id, messageText);
+                var response = await _forwarder.ForwardAsync(message.Chat.Id, messageText);
+                _logger.LogInformation("Response from processor status code: {StatusCode}", response.StatusCode);
             }
         }
 

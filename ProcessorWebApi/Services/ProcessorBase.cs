@@ -11,10 +11,13 @@ namespace ProcessorWebApi.Services
 
         protected ChromeDriver CreateDefaultDriver(string uri)
         {
+            ChromeDriverService service = ChromeDriverService.CreateDefaultService();
+            service.WhitelistedIPAddresses = " ";
+
             ChromeOptions options = new();
             options.AddArgument("--headless");
 
-            return new ChromeDriver(options)
+            return new ChromeDriver(service, options)
             {
                 Url = uri
             };

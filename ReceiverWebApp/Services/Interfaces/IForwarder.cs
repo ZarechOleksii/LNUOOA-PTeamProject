@@ -2,6 +2,6 @@
 {
     public interface IForwarder
     {
-        public Task ForwardAsync(long chatId, string link);
+        public Task<HttpResponseMessage> ForwardAsync(long chatId, string link);
     }
 }

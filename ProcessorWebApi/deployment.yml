@@ -11,13 +11,26 @@ spec:
     metadata:
       labels:
         app: savevid-processor-pod
+        azure.workload.identity/use: "true"
     spec:
+      serviceAccountName: "workload-identity-sa"
       containers:
       - name: savevid-processor-container
-        image: processorimage:1.0.2
+        image: savevid.azurecr.io/processorimage:latest
         resources:
           limits:
             memory: "256M"
-            cpu: "1.0"
+            cpu: "0.25"
         ports:
         - containerPort: 8080
+        volumeMounts:
+        - name: secrets-store01-inline
+          mountPath: "/mnt/secrets-store"
+          readOnly: true
+      volumes:
+        - name: secrets-store01-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "token-provider-class"
