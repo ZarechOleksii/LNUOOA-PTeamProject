@@ -70,6 +70,6 @@ jobs:
               name: Deploys application
               with:
                 action: deploy
-                images: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
-                manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
                 namespace: default
+                manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
+                images: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}

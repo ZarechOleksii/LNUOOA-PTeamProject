@@ -16,7 +16,7 @@ spec:
       serviceAccountName: "workload-identity-sa"
       containers:
       - name: savevid-processor-container
-        image: savevid.azurecr.io/processorimage
+        image: SaveVid.azurecr.io/processorimage:latest
         resources:
           limits:
             memory: "1024M"
