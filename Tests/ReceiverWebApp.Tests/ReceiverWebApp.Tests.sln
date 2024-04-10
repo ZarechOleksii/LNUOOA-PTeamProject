@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReceiverWebApp.Tests", "ReceiverWebApp.Tests.csproj", "{F606FF87-5BB2-4ACC-870A-7485AF610E17}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReceiverWebApp", "..\..\ReceiverWebApp\ReceiverWebApp.csproj", "{47A66CB5-443F-4577-9D2B-B3600C54158C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{43A4B061-4473-4B89-AFEB-B8052FDFF8A9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F606FF87-5BB2-4ACC-870A-7485AF610E17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F606FF87-5BB2-4ACC-870A-7485AF610E17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F606FF87-5BB2-4ACC-870A-7485AF610E17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F606FF87-5BB2-4ACC-870A-7485AF610E17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47A66CB5-443F-4577-9D2B-B3600C54158C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47A66CB5-443F-4577-9D2B-B3600C54158C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47A66CB5-443F-4577-9D2B-B3600C54158C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47A66CB5-443F-4577-9D2B-B3600C54158C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{47A66CB5-443F-4577-9D2B-B3600C54158C} = {43A4B061-4473-4B89-AFEB-B8052FDFF8A9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {318FE01E-8F5A-4296-9CE6-03F9B34A22E8}
+	EndGlobalSection
+EndGlobal
