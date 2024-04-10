@@ -6,7 +6,7 @@ namespace ReceiverWebApp.Services
     {
         const string ChatId = "ChatIdentifier";
         const string Link = "MediaUri";
-        const string UriString = "http://40.127.208.40:3333/api/send-media";
+        const string UriString = "http://20.105.0.2:3333/api/send-media";
 
         public async Task<HttpResponseMessage> ForwardAsync(long chatId, string link)
         {
