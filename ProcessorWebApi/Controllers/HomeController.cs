@@ -22,8 +22,8 @@ namespace ProcessorWebApi.Controllers
             if (processor is null)
             {
                 logger.LogDebug("{MediaUri} is not currently supported.", request.MediaUri);
-                _ = bot.SendTextMessageAsync(new ChatId(request.ChatIdentifier), StandartCommandMessages.LinkNotSupported);
-                return BadRequest();
+                await bot.SendTextMessageAsync(new ChatId(request.ChatIdentifier), StandartCommandMessages.LinkNotSupported);
+                return BadRequest("{MediaUri} is not currently supported.");
             }
 
             logger.LogDebug("{MediaUri} is handled by: {ProcessorType}", request.MediaUri, processor.GetType());
@@ -36,14 +36,14 @@ namespace ProcessorWebApi.Controllers
             catch (OperationCanceledException)
             {
                 logger.LogError("{MediaUri} was timed out.", request.MediaUri);
-                _ = bot.SendTextMessageAsync(new ChatId(request.ChatIdentifier), StandartCommandMessages.TimedOut);
-                return BadRequest();
+                await bot.SendTextMessageAsync(new ChatId(request.ChatIdentifier), StandartCommandMessages.TimedOut);
+                return BadRequest("xyi1");
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "{MediaUri} failed with exception.", request.MediaUri);
-                _ = bot.SendTextMessageAsync(new ChatId(request.ChatIdentifier), StandartCommandMessages.UnknownError);
-                return BadRequest();
+                await bot.SendTextMessageAsync(new ChatId(request.ChatIdentifier), StandartCommandMessages.UnknownError);
+                return BadRequest("xyi2");
             }
         }
     }
