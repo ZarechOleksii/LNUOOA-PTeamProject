@@ -83,7 +83,7 @@ namespace ProcessorWebApi.Tests
 
         [TestCase("htts://www.tiktok.com/@teiepni/video/7345511492961324293")]
         [TestCase("https://www.instagram.com/reels/C5WYNvhvkp2/")]
-        [TestCase("http://www.tiktok.com/@dyadichkin/video/7351005582641548549")]
+        [TestCase("http://www.tiktok1.com/@dyadichkin/video/7351005582641548549")]
         [TestCase("kill all humans")]
         public void IsValidTikTokFromPCFailsForInvalidLinkTest(string link)
         {
