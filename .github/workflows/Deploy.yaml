@@ -33,7 +33,7 @@ jobs:
           include-prerelease: true
 
       - name: Test with dotnet
-        run: dotnet test ${{ env.TEST_SOLUTION_NAME }} -c Release
+        run: dotnet test ${{ env.TEST_SOLUTION_NAME }} -c Debug
 
 
   build-receiver:

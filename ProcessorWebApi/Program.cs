@@ -11,12 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 var botConfigurationSection = builder.Configuration.GetSection(BotConfiguration.Configuration);
 var botConfiguration = botConfigurationSection.Get<BotConfiguration>() ?? throw new Exception("No bot config.");
 
-string botToken;
-
 Uri keyVaultURL = new(builder.Configuration.GetSection("KeyVaultURL").Value!);
-var azureCredential = new DefaultAzureCredential();
-builder.Configuration.AddAzureKeyVault(keyVaultURL, azureCredential);
-botToken = builder.Configuration.GetSection("BotToken").Value!;
+
+if (builder.Environment.IsProduction())
+{
+    var azureCredential = new DefaultAzureCredential();
+    builder.Configuration.AddAzureKeyVault(keyVaultURL, azureCredential);
+}
+
+string botToken = builder.Configuration.GetSection("BotToken").Value!;
 
 botConfiguration.BotToken = botToken;
 builder.Services.Configure<BotConfiguration>(botConfigurationSection);
