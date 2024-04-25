@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace Integration.Tests
@@ -12,7 +15,20 @@ namespace Integration.Tests
 
         public IntegrationTests()
         {
-            var application = new WebApplicationFactory<Program>();
+            var application = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureServices(services =>
+                    {
+                        var descriptor = services.Single(d => d.ServiceType == typeof(ITelegramBotClient));
+                        services.Remove(descriptor);
+
+                        descriptor = services.Single(d => d.ServiceType == typeof(HttpClient));
+                        services.Remove(descriptor);
+
+                        services.AddSingleton(new Mock<ITelegramBotClient>().Object);
+                    });
+                });
             _httpClient = application.CreateClient();
         }
 
