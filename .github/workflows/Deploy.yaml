@@ -42,6 +42,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
+          
       - name: Build with dotnet
         run: dotnet build ${{ env.RECEIVER_PROJECT_NAME }}/${{ env.RECEIVER_PROJECT_NAME }}.sln -c Release
 
@@ -82,6 +84,7 @@ jobs:
       runs-on: ubuntu-latest
       needs:
           - build-processor-image
+          - build-receiver
       steps:
           - uses: actions/checkout@v3
           
@@ -115,7 +118,9 @@ jobs:
 
   deploy-receiver:
     runs-on: ubuntu-latest
-    needs: build-receiver
+    needs:
+        - build-processor-image
+        - build-receiver
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
