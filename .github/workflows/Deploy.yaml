@@ -1,0 +1,144 @@
+name: Test, Build, Deploy app to Azure
+
+on:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
+
+env:
+    TEST_SOLUTION_NAME: Tests/AllTests.sln
+    RECEIVER_PROJECT_NAME: ReceiverWebApp
+    ACR_RESOURCE_GROUP: SaveVid
+    AZURE_CONTAINER_REGISTRY: SaveVid
+    CLUSTER_NAME: SaveVid-LowCost-AKS
+    CLUSTER_RESOURCE_GROUP: SaveVid
+    CONTAINER_NAME: processorimage
+    DEPLOYMENT_MANIFEST_PATH: |
+        ./ProcessorWebApi/deployment.yml
+        ./ProcessorWebApi/service.yml
+
+jobs:
+
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.x'
+          include-prerelease: true
+
+      - name: Test with dotnet
+        run: dotnet test ${{ env.TEST_SOLUTION_NAME }} -c Release
+
+
+  build-receiver:
+    needs:
+        - run-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build with dotnet
+        run: dotnet build ${{ env.RECEIVER_PROJECT_NAME }}/${{ env.RECEIVER_PROJECT_NAME }}.sln -c Release
+
+      - name: Publish with dotnet
+        run: dotnet publish ${{ env.RECEIVER_PROJECT_NAME }}/${{ env.RECEIVER_PROJECT_NAME }}.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
+
+  build-processor-image:
+      needs:
+          - run-tests
+      permissions:
+          contents: read
+          id-token: write
+      runs-on: ubuntu-latest
+      steps:
+          - uses: actions/checkout@v3
+
+          - uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
+            name: Azure login
+            with:
+              client-id: ${{ secrets.AZURE_CLIENT_ID }}
+              subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+              tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
+          - name: Build and push image to ACR
+            run: az acr build --image ${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./ProcessorDockerfile ./
+
+  deploy-processor:
+      permissions:
+          actions: read
+          contents: read
+          id-token: write
+      runs-on: ubuntu-latest
+      needs:
+          - build-processor-image
+      steps:
+          - uses: actions/checkout@v3
+          
+          - uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
+            name: Azure login
+            with:
+              client-id: ${{ secrets.AZURE_CLIENT_ID }}
+              subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+              tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
+          - uses: azure/use-kubelogin@v1
+            name: Set up kubelogin for non-interactive login
+            with:
+              kubelogin-version: v0.0.25
+
+          - uses: azure/aks-set-context@v3
+            name: Get K8s context
+            with:
+              admin: "false"
+              cluster-name: ${{ env.CLUSTER_NAME }}
+              resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+              use-kubelogin: "true"
+
+          - uses: Azure/k8s-deploy@v4
+            name: Deploys application
+            with:
+              action: deploy
+              namespace: default
+              manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
+              images: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+
+  deploy-receiver:
+    runs-on: ubuntu-latest
+    needs: build-receiver
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write #This is required for requesting the JWT
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: .net-app
+      
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7C960C3B23DA4DA4B0DA5661834C8589 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6BBC9CBE6CE04EA395C1782EE15C607E }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A68025D5AF624EED8F6D0F96DFF38A31 }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'savevid'
+          slot-name: 'Production'
+          package: .

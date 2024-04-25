@@ -18,4 +18,7 @@
     <ProjectReference Include="..\SharedLib\SharedLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+	<InternalsVisibleTo Include="ReceiverWebApp.Tests" />
+  </ItemGroup>
 </Project>

@@ -13,11 +13,14 @@ namespace ProcessorWebApi.Services
         [GeneratedRegex(@"^(https?:\/\/)?(www\.)?instagram\.com\/p\/(.*)", RegexOptions.IgnoreCase, "en-US")]
         private static partial Regex InstagramPhotoRegex();
 
-        [GeneratedRegex(@"^(https?:\/\/)?(www\.)?instagram\.com\/reel\/(.*)", RegexOptions.IgnoreCase, "en-US")]
+        [GeneratedRegex(@"^(https?:\/\/)?(www\.)?instagram\.com\/reels?\/(.*)", RegexOptions.IgnoreCase, "en-US")]
         private static partial Regex InstagramReelRegex();
 
-        [GeneratedRegex(@"^(https?://)?(www\.)?tiktok\.com/@[\w\d-]+/video/\d+", RegexOptions.IgnoreCase, "en-US")]
-        private static partial Regex TikTokVideoRegex();
+        [GeneratedRegex(@"^(https?://)?(www\.)?tiktok\.com/@[\w\d-.]+/video/\d+", RegexOptions.IgnoreCase, "en-US")]
+        private static partial Regex TikTokVideoPCRegex();
+
+        [GeneratedRegex(@"^https://vm\.tiktok\.com/[\w-]+/$", RegexOptions.IgnoreCase, "en-US")]
+        private static partial Regex TikTokVideoMobileRegex();
 
         public ProcessorSelectorService(
             IInstagramPhotoProcessor instagramPhotoProcessor,
@@ -30,11 +33,11 @@ namespace ProcessorWebApi.Services
             _tikTokVideoProcessor = tikTokVideoProcessor;
         }
 
-        private bool IsInstagramPhotoUri(string uri) => InstagramPhotoRegex().IsMatch(uri);
+        public bool IsInstagramPhotoUri(string uri) => InstagramPhotoRegex().IsMatch(uri);
 
-        private bool IsInstagramReelUri(string uri) => InstagramReelRegex().IsMatch(uri);
+        public bool IsInstagramReelUri(string uri) => InstagramReelRegex().IsMatch(uri);
 
-        private bool IsTikTokVideoUri(string uri) => TikTokVideoRegex().IsMatch(uri);
+        public bool IsTikTokVideoUri(string uri) => TikTokVideoPCRegex().IsMatch(uri) || TikTokVideoMobileRegex().IsMatch(uri);
 
         public IProcessor? GetRequiredProcessor(string uri) =>
             uri switch

@@ -22,5 +22,9 @@
   <ItemGroup>
     <ProjectReference Include="..\SharedLib\SharedLib.csproj" />
   </ItemGroup>
+	
+  <ItemGroup>
+	<InternalsVisibleTo Include="ProcessorWebApi.Tests" />
+  </ItemGroup>
 
 </Project>

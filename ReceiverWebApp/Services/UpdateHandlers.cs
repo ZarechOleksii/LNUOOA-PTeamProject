@@ -27,7 +27,7 @@ namespace ReceiverWebApp.Services
                 _ => exception.ToString()
             };
 
-            _logger.LogInformation("HandleError: {ErrorMessage}", ErrorMessage);
+            _logger.LogError("HandleError: {ErrorMessage}", ErrorMessage);
             return Task.CompletedTask;
         }
 
@@ -73,12 +73,7 @@ namespace ReceiverWebApp.Services
 
         public static bool IsValidLink(string? message)
         {
-            if (Uri.IsWellFormedUriString(message, UriKind.Absolute))
-            {
-                return true;
-            }
-
-            return false;
+            return Uri.IsWellFormedUriString(message, UriKind.Absolute);
         }
 
         private Task UnknownUpdateHandlerAsync()
