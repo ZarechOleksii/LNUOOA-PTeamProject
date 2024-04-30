@@ -10,7 +10,7 @@ env:
 
 jobs:
 
-  run-tests:
+  code-coverage:
     runs-on: ubuntu-latest
 
     steps:
