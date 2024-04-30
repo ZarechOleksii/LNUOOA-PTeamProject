@@ -43,18 +43,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '8.x'
           include-prerelease: true
-          
+
+      - name: Versioning 
+        id: version
+        uses: paulhatch/semantic-version@latest
+
       - name: Build with dotnet
         run: dotnet build ${{ env.RECEIVER_PROJECT_NAME }}/${{ env.RECEIVER_PROJECT_NAME }}.sln -c Release
 
       - name: Publish with dotnet
-        run: dotnet publish ${{ env.RECEIVER_PROJECT_NAME }}/${{ env.RECEIVER_PROJECT_NAME }}.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish ${{ env.RECEIVER_PROJECT_NAME }}/${{ env.RECEIVER_PROJECT_NAME }}.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp -p:Version=${{ steps.version.outputs.version }}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
