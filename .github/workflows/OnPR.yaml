@@ -124,10 +124,20 @@ jobs:
       - name: Test with dotnet
         run: dotnet test ${{ env.TEST_SOLUTION_NAME }} -c Debug --verbosity normal --logger "trx;LogFilePrefix=test-results" || true
 
-      - name: Publish Test Results
+      - name: Publish Test Results to summary
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           files: ./**/*.trx
           job_summary: true
           comment_mode: off
+          check_run: false
+
+      - name: Publish Test Results To A Check
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Automated Tests Info
+          path: ./**/*.trx"                           
+          reporter: dotnet-trx
+          fail-on-error: true
