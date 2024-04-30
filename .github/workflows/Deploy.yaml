@@ -33,7 +33,25 @@ jobs:
           include-prerelease: true
 
       - name: Test with dotnet
-        run: dotnet test ${{ env.TEST_SOLUTION_NAME }} -c Debug
+        run: dotnet test ${{ env.TEST_SOLUTION_NAME }} -c Debug --verbosity normal --logger "trx;LogFilePrefix=test-results" || true
+
+      - name: Publish Test Results to summary
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: ./**/*.trx
+          job_summary: true
+          comment_mode: off
+          check_run: false
+
+      - name: Publish Test Results To A Check
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Automated Tests Info
+          path: "**/*.trx"                           
+          reporter: dotnet-trx
+          fail-on-error: true
 
 
   build-receiver:
@@ -61,6 +79,11 @@ jobs:
 
       - name: Publish with dotnet
         run: dotnet publish ${{ env.RECEIVER_PROJECT_NAME }}/${{ env.RECEIVER_PROJECT_NAME }}.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp -p:Version=${{ steps.version.outputs.version }}
+
+      - name: Display version of the application
+        run: |
+          echo "## Version" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
