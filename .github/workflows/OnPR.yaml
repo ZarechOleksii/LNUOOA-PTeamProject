@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-    TEST_SOLUTION_NAME: Tests/AllTests.sln
+    TEST_SOLUTION_NAME: Tests/AllTests
     RECEIVER_PROJECT_NAME: ReceiverWebApp
     PROCESSOR_PROJECT_NAME: ProcessorWebApi
     ACR_RESOURCE_GROUP: SaveVid
