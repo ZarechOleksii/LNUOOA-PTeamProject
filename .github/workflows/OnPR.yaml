@@ -53,7 +53,7 @@ jobs:
       - name: Add coverage report to the job summary
         run: |
           echo "## Code Coverage" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.coverage.outputs.markdownReport }}" >> $GITHUB_STEP_SUMMARY
+          cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
 
 
   run-linters:
@@ -111,12 +111,23 @@ jobs:
   run-dotnet-tests:
     name: Run dotnet tests
     runs-on: ubuntu-latest
-
+    
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.x'
+          include-prerelease: true
+
+      - name: Test with dotnet
+        run: dotnet test ${{ env.TEST_SOLUTION_NAME }} -c Debug --verbosity normal --logger "trx;LogFilePrefix=test-results" || true
+
       - name: Run dotnet tests
         uses: zyborg/dotnet-tests-report@v1
         with:
-          project_path: ${{ env.TEST_SOLUTION_NAME }}
+          test_results_path: "**/*.trx"
           report_name: test-report
           report_title: Test report
           github_token: ${{ secrets.GITHUB_TOKEN }}
