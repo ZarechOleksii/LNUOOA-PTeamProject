@@ -124,10 +124,9 @@ jobs:
       - name: Test with dotnet
         run: dotnet test ${{ env.TEST_SOLUTION_NAME }} -c Debug --verbosity normal --logger "trx;LogFilePrefix=test-results" || true
 
-      - name: Run dotnet tests
-        uses: zyborg/dotnet-tests-report@v1
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
         with:
-          test_results_path: "**/*.trx"
-          report_name: test-report
-          report_title: Test report
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: test-results/**/*.trx
+          job_summary: true
