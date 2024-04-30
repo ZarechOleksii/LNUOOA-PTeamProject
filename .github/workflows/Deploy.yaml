@@ -54,7 +54,7 @@ jobs:
 
       - name: Versioning 
         id: version
-        uses: paulhatch/semantic-version@latest
+        uses: PaulHatch/semantic-version@v5.4.0
 
       - name: Build with dotnet
         run: dotnet build ${{ env.RECEIVER_PROJECT_NAME }}/${{ env.RECEIVER_PROJECT_NAME }}.sln -c Release
