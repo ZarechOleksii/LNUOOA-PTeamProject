@@ -72,6 +72,7 @@ jobs:
       - name: Run linters
         uses: wearerequired/lint-action@v2
         with:
+          check_name: Linter Info
           continue_on_error: false
           dotnet_format: true
 
@@ -138,6 +139,6 @@ jobs:
         if: always()
         with:
           name: Automated Tests Info
-          path: ./**/*.trx"                           
+          path: "**/*.trx"                           
           reporter: dotnet-trx
           fail-on-error: true
