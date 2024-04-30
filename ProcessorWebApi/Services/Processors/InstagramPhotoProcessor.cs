@@ -29,9 +29,9 @@ namespace ProcessorWebApi.Services.Processors
             var responseStream = await client.GetStreamAsync(imgLink)!;
 
             await _bot.SendPhotoAsync(
-                request.ChatIdentifier, 
-                InputFile.FromStream(responseStream), 
-                caption: string.Format(StandartCommandMessages.Caption, request.MediaUri), 
+                request.ChatIdentifier,
+                InputFile.FromStream(responseStream),
+                caption: string.Format(StandartCommandMessages.Caption, request.MediaUri),
                 parseMode: ParseMode.MarkdownV2);
         }
     }
